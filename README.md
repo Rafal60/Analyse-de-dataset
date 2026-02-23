@@ -24,3 +24,4 @@ Présentation (7) :
 - Fonctionnalités supplémentaire ou intéressantes (1)
 
 dataset choisit : Video games sales
+https://www.kaggle.com/datasets/ulrikthygepedersen/video-games-sales
