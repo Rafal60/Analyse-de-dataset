@@ -1,0 +1,5 @@
+# Bibliothèque pour la manipulation et l'analyse de données
+pandas
+# Bibliothèque pour dessiner des graphiques
+matplotlib
+streamlit

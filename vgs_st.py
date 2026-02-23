@@ -1,4 +1,7 @@
 import pandas as pd
+import streamlit as st
+
+st.write("Streamlit demo")
 
 df = pd.read_csv("video_games_sales.csv")
-df.head()
+st.write(df)
