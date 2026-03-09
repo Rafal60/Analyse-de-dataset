@@ -60,7 +60,7 @@ def load_data():
         'Adventure': 'Aventure', 'Strategy': 'Stratégie', 'Puzzle': 'Réflexion'
     }
     df['genre'] = df['genre'].map(traduction_genres).fillna(df['genre'])
-    df = df.assign(ventes_hors_na = df['global_sales'] - df['na_sales'])
+    df = df.assign(market_share = df["global_sales"] / df["global_sales"].sum() * 100)
     return df
 
 df = load_data()
@@ -86,12 +86,14 @@ if menu == "🎮 Start: Stats":
     
     with col1:
         st.subheader("TOP 10 ÉDITEURS")
-        top_editeurs = df['publisher'].value_counts().head(10)
+        top_editeurs = df['publisher'].value_counts().head(10).reset_index()
+        top_editeurs.columns = ["Éditeur", "Nombre de jeux"]
         st.dataframe(top_editeurs, use_container_width=True)
         
     with col2:
         st.subheader("FIABILITÉ DES GENRES")
         stats_genre = df.groupby("genre")["global_sales"].agg(['mean', 'std']).sort_values(by='mean', ascending=False)
+        stats_genre = stats_genre.rename(columns={"mean": "Ventes moyennes (millions)","std": "Écart type (millions)"})
         st.dataframe(stats_genre.round(2), use_container_width=True)
 
 elif menu == "🏆 Boss: Plateformes":
@@ -118,7 +120,7 @@ elif menu == "🏆 Boss: Plateformes":
     
     data.plot(kind="bar", color=couleur, ax=ax, edgecolor="white")
     ax.set_title(f"TOP 10 PLATEFORMES - {region}", color=couleur, fontweight='bold')
-    ax.set_ylabel("Ventes (Millions)", color='white')
+    ax.set_ylabel("Jeux Vendu (Millions)", color='white')
     ax.tick_params(colors='white')
     plt.xticks(rotation=45)
     
@@ -129,21 +131,27 @@ elif menu == "🚀 Bonus: Tendances":
     
     col1, col2 = st.columns(2)
     
+
+
+
     with col1:
         st.subheader("JEU TOP 1 PAR GENRE")
+
         idx = df.groupby("genre")["global_sales"].idxmax()
         top = df.loc[idx].copy()
-        top["label"] = top["genre"] + "\n(" + top["name"] + ")"
-        top.set_index("label", inplace=True)
-        
-        fig1, ax1 = plt.subplots(figsize=(8, 8))
-        fig1.patch.set_facecolor('#121212')
-        
-        couleurs_neon = ['#FF007F', '#00FFFF', '#39FF14', '#FFFF00', '#FF4500', '#8A2BE2', '#FF1493', '#00FF00', '#00BFFF', '#FFD700', '#DC143C', '#9400D3']
-        
-        top.plot(y="global_sales", kind="pie", colors=couleurs_neon, autopct='%1.1f%%', legend=False, ax=ax1, textprops={'color':"white", 'weight':'bold'})
-        ax1.set_ylabel("")
-        st.pyplot(fig1)
+        top["label"] = top["genre"] + " (" + top["name"] + ")"
+        fig = px.pie(
+            top,
+            values="global_sales",
+            names="label",
+            title="Jeu le plus vendu par genre",
+            color_discrete_sequence=px.colors.qualitative.Set1
+        )
+        fig.update_layout(
+            template="plotly_dark",
+            paper_bgcolor="#121212"
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
     with col2:
         st.subheader("TIMELINE DES VENTES")
@@ -160,6 +168,25 @@ elif menu == "🚀 Bonus: Tendances":
             ax2.tick_params(colors='white')
             ax2.grid(color='#333333', linestyle='--', linewidth=1)
             st.pyplot(fig2)
+
+    st.subheader("TOP 20 DES JEUX PAR GENRE")
+
+    categorie = st.selectbox(
+        "CHOISIS TA CATÉGORIE :",
+        ["Toutes", 'Action', 'Jeu de Rôle', 'Sport', 'Divers', 'Course', 'Tir', 
+         'Plateforme','Combat','Simulation', 'Aventure','Stratégie', 'Réflexion']
+    )
+
+    if categorie == "Toutes":
+        data = df
+    else:
+        data = df[df["genre"] == categorie]
+
+    top_games = data.sort_values("global_sales", ascending=False).head(20)
+    top_games = top_games[["name","genre","platform","publisher","year","global_sales", "market_share"]]
+    top_games = top_games.reset_index(drop=True)
+    top_games.index = top_games.index + 1
+    st.dataframe(top_games, use_container_width=True)
 
 elif menu == "🌍 World Map":
     st.header(">> LEVEL 4 : WORLD MAP")
