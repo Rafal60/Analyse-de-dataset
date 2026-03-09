@@ -1,4 +1,8 @@
+# Permet d'exécuter des scripts Python depuis un jupyter notebook
+ipykernel
+# Bibliothèque pour la manipulation et l'analyse de données
 pandas==2.3.3
+# Bibliothèque pour dessiner des graphiques
 matplotlib==3.10.8
 streamlit==1.54.0
 plotly==6.5.2
