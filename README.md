@@ -4,7 +4,7 @@ Réaliser une études sur un dataset fourni par https://www.kaggle.com/datasets/
 
 Utilisation des fonctionnalités de pandas (7):
 - groupby (0.5)
-- sum (0.5), moyenne (0.5) , écart type (0.5) et value_counts (0.5)
+- sum (0.5), moyenne (0.5) , écart type (0.5) et value_counts (0.5) ✔
 - Dérivation de nouvelles colonnes à partir de colonnes existantes (0.5)
 - apply ou map (0.5)
 - assign (0.5)
@@ -24,3 +24,4 @@ Présentation (7) :
 - Fonctionnalités supplémentaire ou intéressantes (1)
 
 dataset choisit : Video games sales
+https://www.kaggle.com/datasets/ulrikthygepedersen/video-games-sales

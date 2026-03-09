@@ -85,4 +85,7 @@ def topJeuparGenre():
     plt.tight_layout()
     plt.show()
     
+# --- EXÉCUTION ---
+# On appelle les fonctions sans 'print()'
+# ventesGlobalconsole(saleGlobalConsole)
 topJeuparGenre()
